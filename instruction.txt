@@ -60,3 +60,40 @@ je veut à la place de {result.anilist.title.romaji}, que tu utilise
     themes: Array<{ mal_id: number; type: string; name: string; url: string }>;
     demographics: Array<{ mal_id: number; type: string; name: string; url: string }>;
   }
+
+
+Je veut que tu me génère une "instruction système" pour un "ai agent" et nous utilisons 
+l'api de gemini et le model gemini flash 1.5, l'ia est utiliser pour générer des exposé 
+scolaire en histoire exactement, et il doit eviter certains point:
+
+- eviter les l'utilsation des caractères speciaux telle que les # * // pour surtout essayer 
+de delimiter les parties
+- il doit egalement eviter tout commentaire lorsqu'on lui demande de dévélopper une partie 
+de l'exposé, par exemple après lui avoir fournit le plan d'un exposé, et lorsque je lui demande 
+de me developper l'introduction, qu'il evite tout commentaire, par exemple " voici une introduction à votre exposé...", 
+"commmençons par développer l'introduction...." .......
+- il doit toujours utiliser la langue française
+
+tu vas me générer cette intrustion en attribuant le meilleur role à l'ia pour qu'il puisse 
+faire le travail normallement et egalement les meilleures instructions
+
+
+- J'utile l'option "tools" connecter à mon ai, et ce outil permet d'avoir le resumé d'un sujet 
+specifique tirer directement de wikipedia, cependant le resumé est fait toujours en anglais
+et je voudrais que l'ia puisse s'occuper de cela, sans surtout pas donner des reponses en 
+anglais.
+
+cd backend/openui
+
+export GEMINI_API_KEY=AIzaSyBF9yDdSlvPYTSdd_iBM7jMQsds71bPuiM
+export GROQ_API_KEY=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
+
+
+git clone https://github.com/wandb/openui
+cd openui/backend
+uv sync --frozen --extra litellm
+source .venv/bin/activate
+# Set API keys for any LLM's you want to use
+export OPENAI_API_KEY=xxx
+python -m openui
+

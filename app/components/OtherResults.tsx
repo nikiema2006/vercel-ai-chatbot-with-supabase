@@ -1,42 +1,7 @@
-// components/OtherResults.tsx
-import React from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { AnimeResult, AnimeDetails } from '../types';
-
-const ResultsContainer = styled(motion.div)`
-  margin-top: 20px;
-`;
-
-const ResultCard = styled(motion.div)`
-  display: flex;
-  background: ${props => props.theme.cardBackground};
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
-const InfoContainer = styled.div`
-  flex-grow: 1;
-`;
-
-const Title = styled.h3`
-  margin: 0 0 10px 0;
-  color: ${props => props.theme.accent};
-`;
-
-const InfoItem = styled.p`
-  margin: 5px 0;
-  font-size: 14px;
-`;
-
-const VideoContainer = styled.div`
-  width: 120px;
-  height: 120px;
-  border-radius: 10px;
-  overflow: hidden;
-`;
+import React, { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { AnimeResult, AnimeDetails } from '../../lib/types';
+import AnimeModal from './AnimeModal';
 
 interface OtherResultsProps {
   results: AnimeResult[];
@@ -44,43 +9,42 @@ interface OtherResultsProps {
 }
 
 const OtherResults: React.FC<OtherResultsProps> = ({ results, details }) => {
+  const [selectedAnime, setSelectedAnime] = useState<number | null>(null);
+
+  const openModal = (index: number) => {
+    setSelectedAnime(index);
+  };
+
+  const closeModal = () => {
+    setSelectedAnime(null);
+  };
+
   return (
-    <ResultsContainer
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.5 }}
-    >
-      <h2>Other results:</h2>
-      {results.map((result, index) => {
-        const detail = details[index];
-        return (
-          <ResultCard
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 * index }}
-            whileHover={{ scale: 1.02 }}
-          >
-            <InfoContainer>
-              <Title>{detail?.title || 'Unknown Title'}</Title>
-              <InfoItem><strong>Episode:</strong> {result.episode || 'N/A'}</InfoItem>
-              <InfoItem><strong>Similarity:</strong> {(result.similarity * 100).toFixed(2)}%</InfoItem>
-              <InfoItem><strong>From - to:</strong> {result.from.toFixed(2)}s - {result.to.toFixed(2)}s</InfoItem>
-              {detail && (
-                <>
-                  <InfoItem><strong>Score:</strong> {detail.score}</InfoItem>
-                  <InfoItem><strong>Year:</strong> {detail.year || 'N/A'}</InfoItem>
-                  <InfoItem><strong>Type:</strong> {detail.type}</InfoItem>
-                </>
-              )}
-            </InfoContainer>
-            <VideoContainer>
-              <video src={result.video} autoPlay loop muted width="100%" height="100%" />
-            </VideoContainer>
-          </ResultCard>
-        );
-      })}
-    </ResultsContainer>
+    <div>
+      {results.map((result, index) => (
+        <Card key={index} className="bg-white/10 border-white/20 mb-4 overflow-hidden transform hover:scale-102 transition-transform duration-300 cursor-pointer" onClick={() => openModal(index)}>
+          <CardContent className="flex items-center">
+            <div className="flex-grow">
+              <h3 className="font-semibold font-serif">{details[index]?.title || 'Unknown Title'}</h3>
+              <p className="text-sm">Episode: {result.episode || 'N/A'}</p>
+              <p className="text-sm">Similarity: {(result.similarity * 100).toFixed(2)}%</p>
+              <p className="text-sm">From: {result.from.toFixed(2)}s - To: {result.to.toFixed(2)}s</p>
+            </div>
+            <div className="w-20 h-20 bg-black rounded-lg ml-4 flex items-center justify-center overflow-hidden">
+              <video src={result.video} autoPlay loop muted className="w-full h-full object-cover" />
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+      {selectedAnime !== null && (
+        <AnimeModal
+          isOpen={true}
+          onClose={closeModal}
+          result={results[selectedAnime]}
+          details={details[selectedAnime]}
+        />
+      )}
+    </div>
   );
 };
 
