@@ -462,5 +462,3 @@ const Home = () => {
 };
 
 export default Home;
-cd /c/Users/Administrator/Downloads/Get anime by image/anime-search-app
-cd "C:\Users\Administrator\Downloads\Get anime by image\anime-search-app"
